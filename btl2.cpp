@@ -59,7 +59,7 @@ public:
         ifstream file(filename);
         if (!file)
         {
-            cerr << "Khong the mo file!\n";
+            cout << "Khong the mo file!\n";
             return;
         }
         file >> vertices;
@@ -79,7 +79,7 @@ public:
         ofstream file(filename);
         if (!file)
         {
-            cerr << "Khong the mo file!\n";
+            cout << "Khong the mo file!\n";
             return;
         }
         file << vertices << "\n";
