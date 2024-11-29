@@ -97,7 +97,7 @@ public:
     }
 
     void saveToFile(ofstream& file) const {
-        file << customerName << "," << event->getEventName() << "\n";
+        file << customerName << "," << event->getEventName() << ","<<event->getDate()<<","<<event->getRemainingTickets()<<"\n";
     }
 };
 
@@ -123,12 +123,19 @@ public:
         return nullptr;
     }
 
-    void buyTicket(string customerName, string eventName) {
+    void buyTicket(string customerName, string eventName,int quantity ) {
         Event* event = findEvent(eventName);
-        if (event != nullptr && event->sellTicket()) {
+        if (event != nullptr && event->getRemainingTickets()>=quantity) {
+        	for(int i =0;i < quantity;++i){
+        		if( event->sellTicket()){
             tickets.push_back(Ticket(customerName, event));
-            cout << "Mua ve thanh cong cho " << customerName << "!\n";
-        }
+            cout << "Mua " <<quantity<<"ve thanh cong cho "<< customerName << "!\n";
+          }
+      }
+            saveData();
+        }else{
+        	cout<<"Khong co du so ve de mua cho su kien"<<eventName<<". \n";
+		}
     }
 
     void cancelTicket(string customerName, string eventName) {
@@ -141,6 +148,7 @@ public:
             if (it != tickets.end()) {
                 tickets.erase(it);
                 cout << "Huy ve thanh cong cho " << customerName << "!\n";
+                saveData();
             }
         }
     }
@@ -168,13 +176,13 @@ public:
     }
 
     void saveData() {
-        ofstream eventFile("events.txt");
+        ofstream eventFile("events.txt",ios::app);
         for (const auto& event : events) {
             event.saveToFile(eventFile);
         }
         eventFile.close();
 
-        ofstream ticketFile("tickets.txt");
+        ofstream ticketFile("tickets.txt",ios::app);
         for (const auto& ticket : tickets) {
             ticket.saveToFile(ticketFile);
         }
@@ -253,12 +261,15 @@ int main() {
                     break;
                 }
                 case 2: {
-                    string customerName, eventName;
+                    string customerName, eventName;int quantity;
                     cout << "Nhap ten khach hang: ";
                     getline(cin, customerName);
                     cout << "Nhap ten su kien: ";
                     getline(cin, eventName);
-                    manager.buyTicket(customerName, eventName);
+                    cout<<"Nhap so luong ve can mua: ";
+                    cin >> quantity;
+                    cin.ignore();
+                    manager.buyTicket(customerName, eventName,quantity);
                     break;
                 }
                 case 3: {
