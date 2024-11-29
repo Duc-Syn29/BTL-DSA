@@ -1,10 +1,9 @@
 #include <iostream>
-#include <vector>
+#include <list>
 #include <string>
 #include <fstream>
 #include <algorithm>
 #include <iomanip>
-
 
 using namespace std;
 
@@ -46,7 +45,7 @@ public:
             ticketsSold++;
             return true;
         } else {
-            cout << "Het ve cho su kien nay .\n";
+            cout << "Het ve cho su kien nay.\n";
             return false;
         }
     }
@@ -56,7 +55,7 @@ public:
             ticketsSold--;
             return true;
         } else {
-            cout << "Khong co ve nao de huy .\n";
+            cout << "Khong co ve nao de huy.\n";
             return false;
         }
     }
@@ -105,8 +104,8 @@ public:
 // Lop TicketManager de quan ly su kien va ve
 class TicketManager {
 private:
-    vector<Event> events;
-    vector<Ticket> tickets;
+    list<Event> events;   
+    list<Ticket> tickets;  
 
 public:
     void addEvent(string name, string date, int totalTickets) {
@@ -120,13 +119,15 @@ public:
                 return &event;
             }
         }
-        cout << "Khong tim thay su kien .\n";
+        cout << "Khong tim thay su kien.\n";
         return nullptr;
-    }void buyTicket(string customerName, string eventName) {
+    }
+
+    void buyTicket(string customerName, string eventName) {
         Event* event = findEvent(eventName);
         if (event != nullptr && event->sellTicket()) {
             tickets.push_back(Ticket(customerName, event));
-            cout << "Mua ve thanh cong cho  " << customerName << "!\n";
+            cout << "Mua ve thanh cong cho " << customerName << "!\n";
         }
     }
 
@@ -134,8 +135,8 @@ public:
         Event* event = findEvent(eventName);
         if (event != nullptr && event->cancelTicket()) {
             auto it = find_if(tickets.begin(), tickets.end(), [&](Ticket& t) {
-    return t.getCustomerName() == customerName && t.getEvent()->getEventName() == eventName;
-});
+                return t.getCustomerName() == customerName && t.getEvent()->getEventName() == eventName;
+            });
 
             if (it != tickets.end()) {
                 tickets.erase(it);
@@ -157,7 +158,7 @@ public:
 
     void displayEvents() const {
         if (events.empty()) {
-            cout << "Chua co su kien nao .\n";
+            cout << "Chua co su kien nao.\n";
         } else {
             for (const auto& event : events) {
                 event.displayEventInfo();
@@ -187,6 +188,7 @@ int main() {
     TicketManager manager;
     manager.addEvent("Concert A", "2024-11-20", 100);
     manager.addEvent("Concert B", "2024-12-14", 50);
+    manager.addEvent("Concert C","2024-7-14",1000);
 
     int choice;
     string userType;
@@ -217,7 +219,8 @@ int main() {
                     getline(cin, eventName);
                     cout << "Nhap ngay to chuc: ";
                     getline(cin, date);
-                    cout << "Nhap tong so ve: ";cin >> totalTickets;
+                    cout << "Nhap tong so ve: ";
+                    cin >> totalTickets;
                     manager.addEvent(eventName, date, totalTickets);
                     break;
                 }
